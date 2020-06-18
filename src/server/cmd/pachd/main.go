@@ -691,7 +691,7 @@ func doFullMode(config interface{}) (retErr error) {
 
 		certPath, keyPath, err := tls.GetCertPaths()
 		if err != nil {
-			log.Warnf("pfs-over-HTTP - TLS disabled: %v", err)
+			log.Warnf("pfs-over-http TLS disabled: %v", err)
 			return server.ListenAndServe()
 		}
 

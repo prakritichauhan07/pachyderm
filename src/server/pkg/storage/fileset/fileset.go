@@ -32,7 +32,6 @@ func (mf *memFile) Write(data []byte) (int, error) {
 type FileSet struct {
 	ctx                        context.Context
 	storage                    *Storage
-	root                       string
 	memAvailable, memThreshold int64
 	name                       string
 	defaultTag                 string
@@ -74,7 +73,6 @@ func (f *FileSet) Put(r io.Reader, customTag ...string) error {
 			}
 			return err
 		}
-		hdr.Name = path.Join(f.root, hdr.Name)
 		mf := f.createFile(hdr, tag)
 		for {
 			n, err := io.CopyN(mf, tr, f.memAvailable)
@@ -96,6 +94,7 @@ func (f *FileSet) Put(r io.Reader, customTag ...string) error {
 }
 
 func (f *FileSet) createFile(hdr *tar.Header, tag string) *memFile {
+	hdr.Name = CleanTarPath(hdr.Name, hdr.FileInfo().IsDir())
 	f.createParent(hdr.Name, tag)
 	hdr.Size = 0
 	mf := &memFile{
@@ -120,6 +119,9 @@ func (f *FileSet) getDataOp(name string) *dataOp {
 
 func (f *FileSet) createParent(name string, tag string) {
 	name, _ = path.Split(name)
+	if name == "" {
+		return
+	}
 	if _, ok := f.fs[name]; ok {
 		return
 	}
@@ -138,8 +140,6 @@ func (f *FileSet) createParent(name string, tag string) {
 
 // Delete deletes a file from the file set.
 func (f *FileSet) Delete(name string, customTag ...string) {
-	// TODO This should be a cleaning function.
-	name = path.Join(f.root, "/", name)
 	var tag string
 	if len(customTag) > 0 {
 		tag = customTag[0]

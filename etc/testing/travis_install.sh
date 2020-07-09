@@ -29,6 +29,7 @@ sudo apt-get install -y -qq \
   fuse
 
 # Install fuse
+which modprobe
 sudo pip3 install explosive.fuse
 sudo modprobe fuse
 sudo chmod 666 /dev/fuse

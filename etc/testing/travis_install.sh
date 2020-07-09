@@ -29,6 +29,8 @@ sudo apt-get install -y -qq \
   fuse
 
 # Install fuse
+echo $PATH
+export PATH= /sbin/:$PATH
 which modprobe
 sudo pip3 install explosive.fuse
 sudo modprobe fuse

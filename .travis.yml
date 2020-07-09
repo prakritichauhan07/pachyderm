@@ -1,5 +1,8 @@
 dist: xenial
 sudo: required
+arch:
+  - amd64
+  - arm64
 cache:
   directories:
     # If any directories are added here, they must also be added to
@@ -40,7 +43,11 @@ stages:
 jobs:
   include:
     - stage: build
+      arch: amd64
       script: etc/testing/travis_build.sh
+    - stage: build
+      arch: arm64
+      script: etc/testing/travis_build.sh    
 
 before_install:
   # Make sure cache dirs exist and are writable

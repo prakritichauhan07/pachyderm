@@ -4,7 +4,12 @@ set -ex
 
 # install latest version of docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+if [ "${TRAVIS_CPU_ARCH}" == "arm64" ] 
+then
+sudo add-apt-repository "deb [arch=arm64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+else
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+fi
 sudo apt-get update -y
 sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
